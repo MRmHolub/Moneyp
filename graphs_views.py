@@ -27,16 +27,6 @@ def graphs(response):
 	customer = Customer.objects.get(id=response.session["customer"])
 	print(customer,"'s graphs accessed")
 	curr_time=datetime.now()
-#non_filtred_carts = Cart.objects.filter(customer=customer)
-	#yearly_carts = [cart for cart in non_filtred_carts if int(cart.date.split(".")[2])==curr_time.year]
-	#monthly_carts = [cart for cart in yearly_carts if int(cart.date.split(".")[1])==curr_time.month]
-	#daily_carts = [cart for cart in monthly_carts if int(cart.date.split(".")[0])==curr_time.day]
-	
-	#dfm=DataFrame(sorted([it.json_serialize() for it in monthly_carts], key=lambda x: x["compare_date"]))
-	#dfd=DataFrame(sorted([it.json_serialize() for it in daily_carts], key=lambda x: x["compare_date"]))
-	#dfy=DataFrame(sorted([it.json_serialize() for it in yearly_carts], key=lambda x: x["compare_date"]))
-	#dfa=DataFrame(sorted([it.json_serialize() for it in non_filtred_carts], key=lambda x: x["compare_date"]))
-	
 
 	df = DataFrame(list(Cart.objects.filter(customer=customer).values()))
 	#print(df)
@@ -54,129 +44,12 @@ def graphs(response):
 	        'yanchor': 'top',
 	        'font':{"family":"Courier New, monospace","size":35, "color":"Lime"}})
 
-#
-#	fig.update_layout(updatemenus=[
-#	        dict(
-#	            buttons=list([
-#	                dict(args=[{"colorscale":"Viridis","visible":[True,False,False,False]}],label="Viridis",method="update"),
-#	                dict(args=[{"colorscale":"Cividis","visible":[False,True,False,False]}],label="Cividis",method="update"),
-#	                dict(args=[{"colorscale":"Blues","visible":[False,False,True,False]}],label="Blues",method="update"),
-#	                dict(args=[{"colorscale":"Greens","visible":[False,False,False,True]}],label="Greens",method="update")]),
-#	            direction="down",
-#	            pad={"r": 10, "t": 10},
-#	            x=0.1,
-#	            xanchor="left",
-#	            y=1.08,
-#	            yanchor="top"),
-#
-#	        dict(
-#	            buttons=list([
-#	            	dict(args=["reversescale", False],label="False",method="update"),
-#	            	dict(args=["reversescale", True],label="True",method="update")]),
-#	            direction="down",
-#	            pad={"r": 10, "t": 10},
-#	            x=0.37,
-#	            xanchor="left",
-#	            y=1.08,
-#	            yanchor="top")])
-#
-#	        dict(
-#	            buttons=list([
-#	            	dict(args=[{"data":dfm}],label="Monthly",method="update"),
-#	            	dict(args=[{"data": dfd}],label="Daily",method="update"),
-#	                dict(args=[{"data": dfy}],label="Yearly",method="update"),
-#	                dict(args=[{"data": dfa}],label="All Time",method="update")]),
-#	            direction="down",
-#	            pad={"r": 10, "t": 10},
-#	            x=0.58,
-#	            xanchor="left",
-#	            y=1.08,
-#	            yanchor="top"),])
-#
-#	fig.update_layout(
-#	    annotations=[
-#	        dict(text="Colorscale", x=0, xref="paper", y=1.06, yref="paper",
-#	                             align="left", showarrow=False),
-#	        dict(text="Reverse<br>Colorscale", x=0.25, xref="paper", y=1.07,
-#	                             yref="paper", showarrow=False)#,
-#	       # dict(text="Time Intervals", x=0.54, xref="paper", y=1.06, yref="paper",
-#	        #                     showarrow=False)
-#	    ])
-#
-#  layout = {
-#     'title': 'Title of the figure',
-#     'yaxis_title'#: 'Y',
-#     'width': 560,
-#
-#	graphs=[fig]
 	plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
 
 	#colors = ['#333F44', '#37AA9C', '#94F3E4']
 
-
-
-
-
-
-	
-	
 	context= {'plot1': plot_div}#, "plot2":graph}
-
-#	
-#	dfc = {'year':df_y, 'month':df_m}
-#
-#	# set index
-#	for df in dfc.keys():
-#	    dfc[df].set_index('x', inplace=True)
-#
-#
-#	# plotly start 
-#	figr = go.Figure()
-#
-#	buttons=[]
-#
-#	# one trace for each column per dataframe: AI and RANDOM
-#	for df in dfc.keys():
-#	    figr.add_trace(go.Scatter(x=dfc[df].index,
-#	                             y=dfc[df]['y'],
-#	                             visible=True,
-#	                             marker=dict(size=12, line=dict(width=2)),
-#	                             marker_symbol = 'diamond',
-#	                             name=df
-#	                  )
-#	             )
-#
-#
-#	# some line settings for fun
-#	lines = [dict(color='royalblue', width=2, dash='dot'), dict(color='firebrick', width=1, dash='dash')]
-#	markers = [dict(size=12, line=dict(width=2)), dict(size=12, line=dict(width=2))]
-#
-#	# create traces for each color: 
-#	# build argVals for buttons and create buttons
-#	for i, df in enumerate(dfc.keys()):
-#	    args_y = []
-#	    args_x = []
-#	    for col in dfc[df]:
-#	        args_y.append(dfc[df][col].values)
-#	        args_x.append(dfc[df].index)
-#	    argVals = [ {'y':args_y, 'x':args_x,
-#	                 'marker':markers[i], 'line': lines[i]}]
-#
-#	    buttons.append(dict(method='update',
-#	                        label=df,
-#	                        visible=True,
-#	                        args=argVals))
-#
-#	updatemenu=[]
-#	updatemenu.append({})
-#	updatemenu[0]['buttons']=buttons
-#	updatemenu[0]['direction']='down'
-#	updatemenu[0]['showactive']=True
-#
-#
-#	figr.update_layout(showlegend=False, updatemenus=updatemenu)
-#	figr.show()
 	return render(response, 'main/graphs.html', context)
 
 
@@ -204,7 +77,7 @@ def wallet(response):
 	
 	context={"state":state, "graph":graph, "m_bill":m_bill, "d_bill":d_bill, "alltime_bill":alltime_bill}
 	return render(response, "main/wallet.html", context)
-#response.person
+
 
 
 
@@ -223,9 +96,6 @@ def make_plot(carts):
 		spent_avg +=[tmp//(day+1)]
 		#if day==int(datetime.now().day):
 		#	todays_spend = todays_spend_temp
-
-
-
 
 	ax1 = m_spend_stack(ax=ax1, plot="stack", avg=spent_avg, mainly=spent_daily, X=X)
 	ax2 = m_spend_stack(ax=ax2, plot="bar", avg=spent_avg, mainly=spent_daily, X=X) 
