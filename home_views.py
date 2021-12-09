@@ -40,6 +40,8 @@ def settings(response):
 			pass2=response.POST["password2"]
 			if pass1 == pass2:
 				response.user.set_password(pass1)
+				response.user.save()
+				print(response.user.password)
 				messages.success(response,"Your password was successfully changed")
 				print("Heslo bylo zmeneno na: ",pass1)
 				#posilam mail o zmene jmena
