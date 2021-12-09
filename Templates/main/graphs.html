@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+{% block nextcss %}
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% endblock %}
+
+
+{% block title %} Graphs {% endblock %}
+
+
+{% block content %}
+<div>
+  {% autoescape off %}
+  	{{ plot1 }}
+  {% endautoescape %}
+
+</div>
+ 
+
+{% endblock %}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	{% block nextcss %}
+
+	{% endblock %}
+	
+	<style type="text/css">
+
+		html, body{
+			font-family: "Times New Roman", Times, serif;
+			min-height: 100% !important;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			background-image:linear-gradient(to left, black,#F7DA3E,black );		
+	/*	background-color: #e84393;
+			background-image: linear-gradient(315deg, #e84393 0%, #000000 74%);*/
+		}
+
+
+		.sidenav{
+			height: 100%;
+			width: 160px;
+			position: fixed;
+			z-index: 1;
+			top:0;
+			left:0;
+			background-color: #2a2600;
+			overflow-x: hidden;
+			padding-top: 7%;
+
+		}
+
+		.sidenav a {
+			padding-left: 36px;
+			padding-top: 8px;
+			text-decoration: none;
+			font-size: 22px;
+			color:#F7DA3E;
+			display: block;
+			border-right: 4px solid #F7DA3E;
+
+
+		}
+
+		.sidenav a:hover{
+			color:	grey;
+		}
+
+		.main{
+			margin-left: 160px;
+			width:auto;
+			z-index: 1;
+			
+		}
+
+		.go_back{
+			left: 155px;
+			position: fixed;
+			overflow-x: hidden;
+			padding-top: 3%;
+			width: 70px;
+			height: 100%;
+		}
+
+		.btn{
+			background-color: #2a2600; /*  */
+			border: none;
+			color: white;
+			padding: 8px 12px;
+			text-align: center;
+			text-decoration: none;
+		
+			font-size: 18px;
+			transition-duration: 0.4s;
+			cursor: pointer;
+		}
+
+		.button2 {
+			background-color: #F7DA3E ; 
+			color: black; 
+			border: 2px solid #2a2600;
+
+		}
+
+		.button2:hover {
+		  background-color:#2a2600 ;
+		  color: #F7DA3E;
+		}
+
+	</style>
+
+	<title> {% block title %}  {% endblock %} </title>
+</head>
+<body>
+	<div class="container">
+		<div class="sidenav">
+			<a href="/home">Home</a>
+			<a href="/wallet">Wallet</a>
+			<a href="/settings">Settings</a>
+			<a href="/graphs">Graphs</a>
+			<a href="/logout">Logout</a>		
+		</div>
+
+		<div class="go_back">
+			<a class="btn button2" href="javascript:history.go(-1)"onMouuseOver="self.status.referrer;return true">Back</a>
+		</div>
+		<div class="main" name="content" id="content">
+			{% block content %}
+
+			{% endblock %}
+		</div>		
+	</div>
+
+</body>
+</html>

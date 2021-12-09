@@ -1,0 +1,231 @@
+{% extends 'main/base.html' %}
+{% block nextcss %}
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+	<style type="text/css">
+		.title {
+		    text-align: center;
+		    padding: 48px 0px;
+		    font-weight: 700;
+		    font-size: 36px;
+		    color: #2a2600;
+		    text-decoration: underline overline;
+
+		}
+		.button_delete:hover{
+			background-color: red ; 
+			color: black; 
+			border: 2px solid #2a2600;
+		}
+
+		.button_delete{
+		  background-color:#2a2600 ;
+		  color: red;
+		  border: 2px solid red ;
+		  align-items: flex-end;
+		}
+		.fl_start{
+			float: right;
+			background-color:#2a2600 ;
+		  	color: lime;
+		  	border: 2px solid lime ;
+			}
+		.fl_start:hover{
+			float: right;
+			background-color:lime ;
+		  	color: black;
+		  	border: 2px solid #2a2600 ;
+			}
+		.fl_end{
+			float: right;
+		}
+		.black{
+			background-color:#2a2600;
+			color:#F7DA3E;
+		}
+
+		.p{
+			margin-bottom: 0;
+		}
+		.accordion-button:not(.collapsed){
+			background-color: #2a2600;
+			color: #F7DA3E;
+			border: 2px solid #F7DA3E;
+		}
+
+		.accordion-button:focus {
+		    z-forloop.counter: 3;
+		    border: 2px solid #2a2600;
+		    outline: 0;
+		    box-shadow: 0 0 0 0.25rem #F7DA3E ;
+		}
+
+		.accordion-button:hover {
+    		background-color:#F7DA3E;
+			color:#2a2600;
+			border-color:black;
+		}
+
+		.button2:hover{
+			background-color: #F7DA3E ; 
+			color: black; 
+			border: 2px solid #F7DA3E;
+		}
+
+		.button2{
+		  background-color:#2a2600 ;
+		  color: #F7DA3E;
+		  border: 2px solid #F7DA3E;
+		  float: right;
+		}
+
+ 		.short{
+ 			width: 75px;
+ 			color: #F7DA3E;
+ 			background-color:#2a2600 ;
+ 			border: 2px solid #F7DA3E;
+ 			float: right;
+ 		
+ 		}
+
+ 		.inputfield{
+ 			width: 250px;
+ 			color: black;
+ 			background-color:#F7DA3E ;
+ 			border: 2px solid #2a2600 ;
+ 
+ 		}
+ 		.topborder{
+ 			padding: 5px;
+ 			border:4px ridge grey;
+ 		}
+
+ 		.amount{
+ 			width: 4%;
+ 		}
+
+ 		.center{
+ 			background-color:#2a2600 ;
+		  	color: #F7DA3E;
+		  	border: 2px solid #F7DA3E;
+ 			float: right;
+ 			padding-right: 3px;
+ 		
+ 		}
+
+ 		.center:hover{
+			background-color: #F7DA3E ; 
+			color: black; 
+			border: 2px solid #F7DA3E;
+		}
+	</style>
+{% endblock %}
+
+{% block title %} Food {% endblock %}
+
+{% block content %}
+	
+	<div class="title">Food & Meals</div>
+	<form method="POST" action="" autocomplete="off">
+	{% csrf_token %}
+	<input type="hidden" name="client" value="food">
+		<div>
+			<input type="submit" value="Save Bill" class="short button2" name="end" action="">
+			<input class="inputfield" type="text" name="place" maxlength="255" id="id_place", placeholder="Place">
+		</div>
+	</form>
+		  <div class="accordion" id="accordionExample">
+		  	{% for section,vals in items.items %}
+		  	{% with forloop.counter as p %}
+		    <div class="accordion-item">
+		      <h2 class="accordion-header" id="headingMain{{p}}">
+		        <button class="accordion-button collapsed black" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMain{{p}}" aria-controls="collapseMain{{p}}">
+		        {{section}}
+		        </button>
+		      </h2>
+		      <div id="collapseMain{{p}}" class="accordion-collapse collapse black" aria-labelledby="headingMain{{p}}" data-bs-parent="#accordionExample">
+		        <div class="accordion-body black">
+
+		        	<div class="accordion" id="accordionExampleBody{{p}}">
+			      	  {% for thing in vals %}
+			      	  	{% with forloop.counter as child %}
+					      <div class="accordion-item">
+							    <h2 class="accordion-header" id="heading{{p}}{{child}}">
+							      <button class="accordion-button collapsed black" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{p}}{{child}}" aria-controls="collapse{{p}}{{child}}">
+							        {{thing}}
+							      </button>
+							    </h2>
+							    <div id="collapse{{p}}{{child}}" class="accordion-collapse collapse black" aria-labelledby="heading{{p}}{{child}}" data-bs-parent="#accordionExampleBody{{p}}">
+							      <div class="accordion-body black">
+							      	<form method="POST" action="" class="fl_end">
+										{% csrf_token %}
+										<button class="button_delete" name="delete_thing" value="delete_{{thing}}">Delete</button>
+										<input type="hidden" name="client" value="food">
+									</form>
+							      	<form method="POST" action="" autocomplete="off">
+				 		  				{% csrf_token %}
+				 		  				<input type="hidden" name="client" value="food">
+			 		  					<input type="hidden" name="section" value="{{section}}">
+			 		  					<input type="hidden" name="thing" value="{{thing}}">
+
+									    {% for field in form %}
+									    	{% if field.name == 'amount' %}
+
+									    		<p>{{field.name.capitalize}} :&nbsp&nbsp&nbsp&nbsp
+									    		<input class="inputfield amount" type="number" name="{{field.name}}" maxlength="50" id="id_{{field.name}}" min="1" value="1"></p><br>
+									    	
+									    	{% elif field.name == 'weight' %}
+									    		<p>{{field.name.capitalize}} | Volume (g | ml) :&nbsp&nbsp&nbsp&nbsp
+										    	<input class="inputfield" type="number" name="{{field.name}}" maxlength="50" id="id_{{field.name}}" min="1" step="1" value="100"></p><br>
+										    
+										    {% elif field.name == 'prize' %}
+									    		<p>{{field.name.capitalize}} (CZK) :&nbsp&nbsp&nbsp&nbsp
+										    	<input class="inputfield" type="number" name="{{field.name}}" maxlength="50" id="id_{{field.name}}" min="1" step="1"></p><br>
+									    	
+									    	{% elif field.name == 'info' %}
+										    	<p>{{field.name.capitalize}} :&nbsp&nbsp&nbsp&nbsp
+										    	<input class="inputfield" name="{{field.name}}" maxlength="255" id="id_{{field.name}}"></p><input type="submit" id="{{thing}}" class="fl_start" name="add_to_cart", value="Add to cart"><br>
+										    
+										    {% elif field.name == "title" %}
+										    	<p>{{field.name.capitalize}} :&nbsp&nbsp&nbsp&nbsp
+										    	<input class="inputfield" name="{{field.name}}" maxlength="255" id="id_{{field.name}}" value="{{thing}}"></p><br>
+										    
+										    {% endif %}
+									    {% endfor %}				 
+									</form>  								
+									</div>
+								</div>
+					  	  </div>
+					  	{% endwith %}
+				      {% endfor %}
+				    	</div>
+				      	  <form method="POST" action="" >
+								{% csrf_token %}
+								<p class="topborder">Name of new item :&nbsp&nbsp&nbsp&nbsp
+								<input type="text" name="title" class="inputfield" maxlength="100">
+						  		<input type="submit" action="" name="new_show_item" class="center" value="Add Item">
+						  		<input type="hidden" name="client" value="food"></p>
+						  		<input type="hidden" name="section" value="{{section}}"></p>
+						  </form>
+				      
+					</div>
+		      </div>
+		    </div>
+		    {% endwith %}
+		    {% endfor %}
+		  </div>
+    {% if messages %}
+	    {% for message in messages %}
+		    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+			    <div class="alert alert-danger" role="alert">
+			  		{{ message }}
+				</div> 
+			{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+				<div class="alert alert-success" role="alert">
+				  	{{ message }}
+				</div>
+			{% endif %}
+	    {% endfor %}
+	{% endif %}	
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+{% endblock %}

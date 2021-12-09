@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% block nextcss %}
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% endblock %}
+
+
+{% block title %} Graphs {% endblock %}
+
+
+{% load static %}
+{% block content %}
+    <div class="row align-items-center">
+    	<div class="col-12">
+    		{% load plotly_dash %}
+    		<div class="{% plotly_class name='graphs2' %}">
+
+    		{% plotly_app name='graphs2' ratio=1 %}
+    	</div>
+    </div>
+
+    
+{% endblock %}
