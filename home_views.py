@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import *
 from datetime import datetime
 from .mail_validate import *
+from django.contrib.auth import authenticate
 
 
 def loged_decorator(func):
@@ -27,48 +28,52 @@ def home(response):
 	return render(response, "main/home.html",{})
 	
 
-@loged_decorator
+#@loged_decorator
 def settings(response):
 
 	customer=Customer.objects.get(id=response.session["customer"])
 	if response.method=="POST":
 		print("SETTINGS",response.POST)
 
-		if response.POST.get("change_pass", False):
-			try:
-				response.POST["password"]==customer.person.password
-				response.session["change_pass"]=True
-			except:
-				messages.error(response,"This is wrong password!")
-
-		elif response.session["change_pass"]:
-			try:
-				pass1=response.POST["password1"]
-				pass2=response.POST["password2"]
-				pass1 == pass2
-				customer.person.set_password(pass1)
+		if response.session["change_pass"]:
+			pass1=response.POST["password1"]
+			pass2=response.POST["password2"]
+			if pass1 == pass2:
+				response.user.set_password(pass1)
+				messages.success(response,"Your password was successfully changed")
+				print("Heslo bylo zmeneno na: ",pass1)
+				#posilam mail o zmene jmena
 				response.session["change_pass"]=False
 				return redirect("settings")
-			except:
+			else:
 				messages.error(response,"These two passwords didn't match!")	
-		elif response.POST["password"]==customer.person.password:			
-			new_email = response.POST["email"]
+
+		else:
+			password=response.POST["password"]
+			username = response.POST["username"]
+			email = response.POST["email"]
 			curr_email = customer.person.email
-			new_name = response.POST["username"]
-			print(new_email,curr_email,new_name)
-			if  new_name!=customer.person.username:
-				new_username(curr_email,customer.person.username, new_name)
-				customer.person.username= new_name
+			print("Current mail",curr_email,"New mail",email,"Name",username)
+
+			if username!=customer.person.username:
+				new_username(curr_email,customer.person.username, username)
+				customer.person.username = username
 				customer.person.save()
-				messages.success(response,"Your name was successy changed")
+				messages.success(response,"Your name was successfully changed")
 				#posilam mail o zmene jmena
-			if new_email!=curr_email:
-				messages.warning(response,"To change email you need to confirm it first.")
-				sk = new_mail(curr_email,customer.person.username)
-				response.session["change_mail_code"]=sk
-				return redirect("welcome_new_user")
 
-
+			user = authenticate(response, username=username, password=password)
+			if user is not None:
+				if response.POST.get("change_pass",False):
+					print("Heslo je spravne oteviram formu pro nove heslo")
+					response.session["change_pass"]=True
+				elif email!=curr_email:
+					messages.warning(response,"To change email you need to confirm it first.")
+					sk = new_mail(curr_email,customer.person.username)
+					response.session["change_mail_code"]=sk
+					return redirect("welcome_new_user")
+			else:
+				messages.error(response,"You need to fill correct password!")
 	else:
 		form = NewSettings()
 		response.session["change_pass"]=False
