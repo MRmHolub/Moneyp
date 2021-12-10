@@ -21,7 +21,7 @@ def month_now(month=datetime.now().month):
     else:
         return range(1,31)
 
-#@loged_decorator
+@loged_decorator
 def graphs(response):
 
 	customer = Customer.objects.get(id=response.session["customer"])
@@ -29,27 +29,31 @@ def graphs(response):
 	curr_time=datetime.now()
 
 	df = DataFrame(list(Cart.objects.filter(customer=customer).values()))
-	#print(df)
-	fig = px.bar(df, x="date", y="prize", color="item_amount",
-		hover_data=["prize","item_amount"],
-		labels={"prize":"Prize of a bill","date":"Date","place":"Place","item_amount":"Amount of items","prize":"Prize"}, height=700, template="plotly_dark", width=1400,text="prize",hover_name="place")
+	print(df.any())
 
-	fig.update_traces(textposition='outside')
+	if df.empty:
+		#nejsou li k dispozici zadne data tak jim tam hodim defaultne nejaky graf
+		long_df = px.data.medals_long()
+		fig = px.bar(long_df, x="nation", y="count",title="Random Graph", color="medal", height=700, template="plotly_dark", width=1400)
 
-	fig.update_layout(title={
-	        'text': "Plot Title",
-	        'y':0.95,
-	        'x':0.5,
-	        'xanchor': 'center',
-	        'yanchor': 'top',
-	        'font':{"family":"Courier New, monospace","size":35, "color":"Lime"}})
+	else:
+		fig = px.bar(df, x="date", y="prize", color="item_amount",
+			hover_data=["prize","item_amount"],
+			labels={"prize":"Prize of a bill","date":"Date","place":"Place","item_amount":"Amount of items","prize":"Prize"}, height=700, template="plotly_dark", width=1400,text="prize",hover_name="place")
+
+		fig.update_traces(textposition='outside')
+
+		fig.update_layout(title={
+		        'text': "Plot Title",
+		        'y':0.95,
+		        'x':0.5
+		        ,
+		        'xanchor': 'center',
+		        'yanchor': 'top',
+		        'font':{"family":"Courier New, monospace","size":35, "color":"Lime"}})
 
 	plot_div = plot(fig, output_type='div', include_plotlyjs=False)
-
-
-	#colors = ['#333F44', '#37AA9C', '#94F3E4']
-
-	context= {'plot1': plot_div}#, "plot2":graph}
+	context= {'plot1': plot_div}
 	return render(response, 'main/graphs.html', context)
 
 

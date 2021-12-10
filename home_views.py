@@ -62,20 +62,19 @@ def settings(response):
 				customer.person.username = username
 				customer.person.save()
 				messages.success(response,"Your name was successfully changed")
-				#posilam mail o zmene jmena
-
-			user = authenticate(response, username=username, password=password)
-			if user is not None:
-				if response.POST.get("change_pass",False):
-					print("Heslo je spravne oteviram formu pro nove heslo")
-					response.session["change_pass"]=True
-				elif email!=curr_email:
-					messages.warning(response,"To change email you need to confirm it first.")
-					sk = new_mail(curr_email,customer.person.username)
-					response.session["change_mail_code"]=sk
-					return redirect("welcome_new_user")
 			else:
-				messages.error(response,"You need to fill correct password!")
+				user = authenticate(response, username=username, password=password)
+				if user is not None:
+					if response.POST.get("change_pass",False):
+						print("Heslo je spravne oteviram formu pro nove heslo")
+						response.session["change_pass"]=True
+					elif email!=curr_email:
+						messages.warning(response,"To change email you need to confirm it first.")
+						sk = new_mail(curr_email,customer.person.username)
+						response.session["change_mail_code"]=sk
+						return redirect("welcome_new_user")
+				else:
+					messages.error(response,"You need to fill correct password!")
 	else:
 		form = NewSettings()
 		response.session["change_pass"]=False
