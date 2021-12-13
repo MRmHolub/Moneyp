@@ -170,9 +170,21 @@ git status #ukaze ktere soubory v danem adresari mas zalohovane a ktere ne, popr
 git commit - m "text commitu"
 git remote add origin https://github.com/MRmHolub/nazevrepositare.git #do promene origin ulozi tento odkaz, slouzi to k tomu aby při přesouvani souboru na server a vice versa jsi nemusel furt vypisovat tu dlouhou adresu
 git branch -M master #vytvoris si hlavni vetev sveho programu 
-git push origin master #posles vsechny commity co jsi spravil na github do vetve master
+git push origin master #posles vsechny commity co jsi spravil na github do vetve master do sveho repozitare (slozky)
 
 vytvoreni nove vetve programu
+-> pouziva se delam li nejakou novou featuru a nechci rozbit cely kod, tak ji prvne vyzkousim na nove vetvi a potom pripadne sloucim
 git branch ti ukaze pomoci hvezdicky v ktere vetvi se nachazis
+git branch nazevnovevetve # vytvori novou vetev
+git checkout nazevnovevetve #presune te do nove vetve
+chces li pushnout svuj dosavadni kod nove featury na github pouzijes
+git push origin nazevnovevetve
+
+Je li featura hotova a chces aby byla v tvem hlavnim projektu (hlavni vetvi), musis se dostat do hlavni master vetve (do vetve do ktere chces slit novinky z jine vetve)
+git checkout master #hlavni vetev
+
+a pote slijes pomoci merge
+
+git merge vetevsfeaturou
 
 
