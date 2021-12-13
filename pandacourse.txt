@@ -1,0 +1,160 @@
+import pandas as pd
+
+df=pd.read_csv("/relativni cesta k slozce/data.csv") #uloží se jako dataframe,
+máme li hodně velké množství řádků a sloupců a chceme je zobrazit cele pouzijeme
+
+pd.set_option('display.max_columns',mnou zadany integer)
+pd.set_option('display.max_rows',49) #napr
+
+Prnvich n radku:
+df.head(n) # n je defaultne 5
+
+poslednich 5 radku,10radku,...
+df.tail()
+df.tail(10)
+
+df.info() # rekne nam datove typy,jmena atd o jednotlivych atributech(sloupcich) dat, a take velikost!
+df.shape # rekne nam rozmer naseho dataframu, je to tuple (78rowsx65cols)
+df.columns # list sloupcu
+
+
+DataFrame si lze predstavit jako slovnik (dict), jehoz hodnoty jsou prvky listu=>
+
+napr:
+
+people = {  "name":["greg","bob","karel","Anna"],
+			"age"=[14,78,98,45],
+			"male"=[1,1,1,0]
+			}
+
+veskera data kazdeho cloveka najdeme zadanim klice a indexu, index predstavuje jakousi item_id, ktera je auto increase
+napr.
+
+karel..item_id = 0 => df["name"][0] == karel
+						df["age"][0] == 14
+						atd..
+kazda instance=>radek
+kazdy klic => sloupec, je instance tridy zvane Series
+
+Ke klicum muzeme pristupovat bud jako ke slovnikum (dictinaries) dále jen dict
+
+selektor:
+	people["age"]=> vrati sloupec/Series objekt
+nebo parametr:
+	people.age 
+	=> nepouziva se, mohlo by nastat ze radek by mel stejny nazev jako nejaka metoda a pak by kolidovaly!!
+
+pristupovani k datum pomoci indexu
+
+df.iloc[i] # ntý řádek 
+df.iloc[[i:j],[0,2]] # itý až jtý řádek s parametry male a name 
+
+pristupovani k datum pomoci nazvu
+
+df.loc[i] # ntý řádek 
+df.loc[[i:j],["name","male"]] # itý až jtý řádek s parametry male a name 
+
+Sumarizace dat:
+
+df["key"].value_counts() #vrati pocet vyskytu jednotlivych moznosti daneho klice/parametru/sloupce
+
+df["male"].value_counts()
+1: 3 #3x 1
+0: 1 #jedenkrat 0
+
+Filtrovani v dataframu:
+dff = df[df["age"]>50] #vyfiltruje aby v novem df byly lide starsi 50 (lze použít operátor ==,<,>,!=,...)
+
+& jako AND
+| jako or
+
+dff = df[ (df["age"]>30) & (df["name"]!=bob)]
+
+Nejlepsi je delat to pomoci df.loc
+
+var = (df["age"]>30) & (df["name"]!=bob)
+
+df.loc[var,"age"] # zobrazi sloupec vek u vsech vybranych lidi
+df.loc[~var,"age"] # zobrazi sloupec vek u vsech lidi co nejsou vybranni
+
+Dalsi moznost filtrovani dat: kontrola zdali 
+names=["anna","greg","tvojematka","milan"]
+
+df["names"].isin(names) # vyfiltruje ty osoby jejichz jmeno je v listu 
+df["names"].str.contains("an") #vyfiltruje ty osoby jejichz jmeno obsahuje string "an", replace,lower,split...
+
+df.rename(columns={"Age":"Vek", "name":"jmeno"}) # prejmenuje nazvy sloupcu
+
+Zmena dat v df:
+pomoci vlastni fce
+df["age"] = df["age"].apply(update_func) #Kazdemu prida 10 let
+def update_func(item)
+	return item+=10
+
+nebo pomoci anonymni fce lambda
+
+df["name"] = df["name"].apply(lambda x: x.capitalize()) #Pokud jmeno nema velke pismeno na zacatku, tak ho tak nastavi
+
+Použití apply na df přímočaře
+df.apply(len)... vrati, kolik ma kazdy z sloupců řádků
+df.apply(len,"axis=columns") #vrati kolik ma kazdy radek sloupcu
+
+kromě fce apply mame i map!
+
+df.applymap(len)
+df["name"].map({"Bob":"Jezis"}) #vsechny boby prejmenuje na jezise a ostatni lidi bude mit jmeno Nan .. -> not a number
+
+Odstraneni dat z df:1. Odstraneni sloupcu
+df.drop(columns=["male","age"]) #ukaze df jen se jmeny, aby bla změna trvalá musi se přidat argument inplace=True
+df.drop(index=3)#odstraní řádek podle jeho id
+
+Lze i přidat řádky
+
+df.append({'name': 'Mikulas'}, ignore_index=True)
+
+Třídění dat:
+df.sort_values(by=["age","name"], ascending=[False,True]) #setřídí podle věku, a stejně staré lidi podle jmena, pro trvalou změnu je potřeba užít zase argument inplace=True
+
+df.sort_index()
+df["age"].nlargest(3) #returnuje prvni tri nejstarsi lidi, take lze pouzit .nsmallest(n)
+
+dff = df.groupby(['name']) vytvori skupiny ktere se lisi nazvem klice
+dff.get_group("bob")
+dff["age"].value_counts().loc["anna"] # ukaze kolik let maji vsechny anny 
+
+dff['male'].agg(["median",'mean'])
+
+
+df.resample('D').agg({'Close':'mean','High':'max','Volume':'sum'}) #pouze mame li set_index na date datovem typu
+
+Statistika s daty
+
+Median,modus,prumer
+
+df["male"].median()...1 prostřední hodnotu
+df.median()... udela median ze sloupcu jejichz datovy typ jsou cisla
+
+df.describe()
+df.mean() #prumer
+df["klic"].fce.sum()
+
+df["name"].count() #počet radku jez maji pro dany klic hodnotu != Nan
+
+dff["male"].value_counts(normalize=True) # misto secteni vrati v procentech
+
+Datovy typ sloupcu:
+
+df.dtypesay
+-> object,int,float64 #může se stát že mám nějaký klíč pod datovým typem objekt ačkoliv obsahuje pouze číslice,poé bych na něj nemohl použít fce mean(),median() atd. tak musim změnit datový typ pomocí:
+
+df['age']=df['age'].astype(int) # musime pojistit aby dataset neobsahoval žádné Nan hodnoty v daném klíčí, jinak nám to hodí error
+pomoci:
+
+df['age'].fillna(0), veškeré Nan změní na 0
+
+
+Další metody:
+df['key'].unique() #veškěré unikátní hodnoty v danem sloupci
+df['date'] = pd.to_datetime(df['Date'],format="%d.%m.%Y")
+
+
