@@ -113,3 +113,7 @@ def display_value(year,month,*args,**kwargs):
             'yanchor': 'top',
             'font':{"family":"Courier New, monospace","size":26, "color":"Lime"}})
     return fig
+
+#  @app.callback(Output('main-fig', 'figure'),
+#            [Input('year', 'value'),
+#            Input('main-slider','value')])
