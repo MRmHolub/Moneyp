@@ -31,7 +31,7 @@ veskera data kazdeho cloveka najdeme zadanim klice a indexu, index predstavuje j
 napr.
 
 karel..item_id = 0 => df["name"][0] == karel
-						df["age"][0] == 14
+						df"[age"][0] == 14
 						atd..
 kazda instance=>radek
 kazdy klic => sloupec, je instance tridy zvane Series
