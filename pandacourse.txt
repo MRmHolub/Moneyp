@@ -158,3 +158,21 @@ df['key'].unique() #veškěré unikátní hodnoty v danem sloupci
 df['date'] = pd.to_datetime(df['Date'],format="%d.%m.%Y")
 
 
+GIT A GITHUB cast
+
+chci poslat svuj projekt na github
+-> zalozim novy github repositar
+-> pokud nemam svuj projekt zalohovany gitem:
+toto pisi do terminalu: 
+git init -> vytvori slozku v danem adresari(hided) do ktere se bude vse zalohovat
+git add . #prida vsechny soubory v danem adresari
+git status #ukaze ktere soubory v danem adresari mas zalohovane a ktere ne, popr, ktere byly modifikovany od posledni zalohy
+git commit - m "text commitu"
+git remote add origin https://github.com/MRmHolub/nazevrepositare.git #do promene origin ulozi tento odkaz, slouzi to k tomu aby při přesouvani souboru na server a vice versa jsi nemusel furt vypisovat tu dlouhou adresu
+git branch -M master #vytvoris si hlavni vetev sveho programu 
+git push origin master #posles vsechny commity co jsi spravil na github do vetve master
+
+vytvoreni nove vetve programu
+git branch ti ukaze pomoci hvezdicky v ktere vetvi se nachazis
+
+
